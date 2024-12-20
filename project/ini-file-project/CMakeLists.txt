@@ -2,7 +2,15 @@ cmake_minimum_required(VERSION 3.10) # 设置CMake的最低版本要求
 project(pmn3 VERSION 0.1.0) # 定义项目名称和版本
 
 set(CMAKE_CXX_STANDARD 14) # 设置C++标准为C++14
-set(EXECUTABLE_OUTPUT_PATH bin) # 设置可执行文件的输出路径
+
+# 设置编译器标志，-Wall表示开启所有警告，-Wextra表示开启额外警告，-Wpedantic表示开启严格警告
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options(/W4)
+endif()
+
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin) # 设置可执行文件的输出路径
 
 # 设置链接器标志, 静态链接gcc和stdc++库，否则在其他机器上运行时可能会提示缺少libstdc++.so.6，
 # -static-libxxx表示静态链接指定的库, -static表示静态链接所有库
