@@ -23,7 +23,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 # 设置查找库时的后缀，通过此方式可以控制CMAKE优先使用动态库还是静态库，会先查找.a文件，再查找.so文件。
 set(CMAKE_FIND_LIBRARY_SUFFIXES .a .so)
 
-# find_package() 只适用于查找安装在系统目录或版还在CMAKE_PREFIX_PATH的目录，且提供了CMake模块文件的库。
+# find_package() 只适用于查找安装在系统目录或包含在CMAKE_PREFIX_PATH的目录，且提供了CMake模块文件的库。
 # 注意，如果是系统内置标准库，可以直接使用库名去链接，不需要使用find_package()或find_library()查找。
 find_package(Threads REQUIRED) # 查找线程库
 
@@ -50,6 +50,7 @@ add_executable(pmn3.elf ${DIR_SRCS}) # 定义可执行文件并添加源文件
 # target_link_libraries()用于链接第三方库到可执行文件，第一个参数是可执行文件名，后面的参数是要链接的库名，多个库用空格或换行隔开，
 # 如果是系统内置标准库，可以直接使用库名去链接；如果时通过find_library()查找的库，需要使用${变量名}的方式去链接。
 # 如果是通过find_package()查找的库，可以使用库名::库名的方式去链接。
+# 对于所有的库，都可直接使用其绝对路径去链接，如：/usr/lib/x86_64-linux-gnu/libzmq.so，但注意动态库需要在运行时将其路径添加到LD_LIBRARY_PATH中。
 target_link_libraries(pmn3.elf 
                       dl                # 链接系统内置标准库, 无需使用find_library()查找, 直接使用库名
                       Threads::Threads  # 链接通过find_package()查找的库, 使用库名::库名的方式
