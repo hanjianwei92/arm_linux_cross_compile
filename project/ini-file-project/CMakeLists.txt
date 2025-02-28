@@ -35,10 +35,15 @@ find_library(boost_filesystemlib boost_filesystem REQUIRED)
 find_library(ssllib ssl REQUIRED)
 find_library(cryptolib crypto REQUIRED)
 
+# 直接查找 zmqpp.hpp 文件所在目录，
+find_path(ZMQPP_DIRECT_INCLUDE_DIR zmqpp.hpp
+    PATH_SUFFIXES zmqpp   # 这会查找包含 zmqpp.hpp 的目录，且该目录名为 zmqpp
+)
+
 # include_directories()会在编译时将指定的目录添加到头文件搜索路径中，且对其子目录有效，
 # 注意，在include子目录头文件时，需要通过 include"子目录/xxx.h"，而不是include"xxx.h"，
 # 要想使用include"xxx.h"的方式，需要在include_directories()中添加子目录路径。
-include_directories("/home/han/third_party/install/include/zmqpp")
+include_directories(${ZMQPP_INCLUDE_DIR})
 include_directories(src) # 包含src目录, 以便在源文件中使用#include "xxx.h"的方式包含头文件
 
 file(GLOB_RECURSE DIR_SRCS # 递归获取src目录下的所有.cpp文件
