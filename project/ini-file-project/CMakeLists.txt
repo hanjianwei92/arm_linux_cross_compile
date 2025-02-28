@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.10) # 设置CMake的最低版本要求
-project(pmn3 VERSION 0.1.0) # 定义项目名称和版本
+set(PROJECT_NAME "ini-file-project") # 定义项目名称
+project(${PROJECT_NAME} VERSION 0.1.0) # 定义项目名称和版本号
 
 set(CMAKE_CXX_STANDARD 14) # 设置C++标准为C++14
+set(CMAKE_CXX_STANDARD_REQUIRED ON) # 设置C++标准为必须
 
 # 设置编译器标志，-Wall表示开启所有警告，-Wextra表示开启额外警告，-Wpedantic表示开启严格警告
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
@@ -43,20 +45,20 @@ find_path(ZMQPP_DIRECT_INCLUDE_DIR zmqpp.hpp
 # include_directories()会在编译时将指定的目录添加到头文件搜索路径中，且对其子目录有效，
 # 注意，在include子目录头文件时，需要通过 include"子目录/xxx.h"，而不是include"xxx.h"，
 # 要想使用include"xxx.h"的方式，需要在include_directories()中添加子目录路径。
-include_directories(${ZMQPP_INCLUDE_DIR})
+include_directories(${ZMQPP_DIRECT_INCLUDE_DIR})
 include_directories(src) # 包含src目录, 以便在源文件中使用#include "xxx.h"的方式包含头文件
 
 file(GLOB_RECURSE DIR_SRCS # 递归获取src目录下的所有.cpp文件
     ${PROJECT_SOURCE_DIR}/src/**.cpp
 )
 
-add_executable(pmn3.elf ${DIR_SRCS}) # 定义可执行文件并添加源文件
+add_executable(${PROJECT_NAME}.elf ${DIR_SRCS}) # 定义可执行文件并添加源文件
 
 # target_link_libraries()用于链接第三方库到可执行文件，第一个参数是可执行文件名，后面的参数是要链接的库名，多个库用空格或换行隔开，
 # 如果是系统内置标准库，可以直接使用库名去链接；如果时通过find_library()查找的库，需要使用${变量名}的方式去链接。
 # 如果是通过find_package()查找的库，可以使用库名::库名的方式去链接。
 # 对于所有的库，都可直接使用其绝对路径去链接，如：/usr/lib/x86_64-linux-gnu/libzmq.so，但注意动态库需要在运行时将其路径添加到LD_LIBRARY_PATH中。
-target_link_libraries(pmn3.elf 
+target_link_libraries(${PROJECT_NAME}.elf 
                       dl                # 链接系统内置标准库, 无需使用find_library()查找, 直接使用库名
                       Threads::Threads  # 链接通过find_package()查找的库, 使用库名::库名的方式
                       ${zmqlib} ${zmqpplib} ${boost_filesystemlib} ${ssllib} ${cryptolib}  # 链接通过find_library()查找的库, 使用${变量名}的方式
